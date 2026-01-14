@@ -2,28 +2,48 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>映画鑑賞アンケート</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         html { scroll-behavior: smooth; }
-        body { background-color: #f8fafc; color: #1f2937; font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; }
+        body { 
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            color: #1f2937; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+        }
         .step { display: none; }
-        .step.active { display: block; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .step.active { display: block; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+        @keyframes pulse { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+        }
 
-        .radio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .radio-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 12px; 
+        }
 
         /* 11段階評価（NPS）のスタイル調整 */
         .rating-grid {
             display: grid;
             grid-template-columns: repeat(11, 1fr);
-            gap: 4px;
+            gap: 6px;
         }
 
         /* スマホで1行に収めるための調整 */
         @media (max-width: 640px) {
-            .rating-grid { gap: 2px; }
+            .rating-grid { gap: 3px; }
             .rating-grid label {
                 padding-left: 2px !important;
                 padding-right: 2px !important;
@@ -34,18 +54,51 @@
         }
 
         input[type="radio"]:checked + label, input[type="checkbox"]:checked + label {
-            background-color: #1e293b;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
             color: white;
-            border-color: #1e293b;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
         }
 
-        .req-mark { color: #ef4444; margin-left: 4px; }
-        .has-error { border: 2px solid #ef4444 !important; background-color: #fef2f2 !important; border-radius: 1rem; padding: 1rem; }
+        input[type="radio"] + label, input[type="checkbox"] + label {
+            transition: all 0.2s ease;
+        }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        input[type="radio"] + label:hover, input[type="checkbox"] + label:hover {
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .req-mark { 
+            color: #ef4444; 
+            margin-left: 4px; 
+            font-weight: 900;
+        }
+        .has-error { 
+            border: 2px solid #ef4444 !important; 
+            background-color: #fef2f2 !important; 
+            border-radius: 1rem; 
+            padding: 1rem; 
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { 
+            background: #cbd5e1; 
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb:hover { 
+            background: #94a3b8; 
+        }
 
         .terms-box {
             max-height: 200px;
@@ -59,31 +112,251 @@
             border-radius: 12px;
             text-align: left;
         }
+
+        .question-block {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        .question-block:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .intro-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 48px 24px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .progress-container {
+            position: relative;
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            color: #6b7280;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            border: 2px solid #e5e7eb;
+        }
+        .btn-secondary:hover {
+            color: #2563eb;
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .question-block label {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #1f2937;
+        }
+        
+        .question-block .text-sm {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        input[type="radio"] + label, input[type="checkbox"] + label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .step-indicator {
+            font-size: 20px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .category-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #2563eb;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* フォントサイズ調整ボタン */
+        .font-size-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+        }
+        .font-size-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #2563eb;
+            background: white;
+            color: #2563eb;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .font-size-btn:nth-child(1) { font-size: 12px; }
+        .font-size-btn:nth-child(2) { font-size: 14px; }
+        .font-size-btn:nth-child(3) { font-size: 16px; }
+        .font-size-btn:nth-child(4) { font-size: 18px; }
+        .font-size-btn:hover {
+            background: #2563eb;
+            color: white;
+            transform: scale(1.1);
+        }
+        .font-size-btn:active {
+            transform: scale(0.95);
+        }
+        .font-size-reset {
+            font-size: 12px;
+            color: #6b7280;
+            padding: 0 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .font-size-reset:hover {
+            color: #2563eb;
+        }
+
+        /* フォントサイズ調整用のクラス */
+        body.font-small {
+            font-size: 14px;
+        }
+        body.font-medium {
+            font-size: 16px;
+        }
+        body.font-large {
+            font-size: 18px;
+        }
+        body.font-xlarge {
+            font-size: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .font-size-control {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 12px;
+            }
+            .font-size-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <!-- ヘッダー -->
-    <header id="headerArea" class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-2xl mx-auto px-6 py-4">
-            <div class="flex items-center justify-between mb-2">
-                <span id="categoryLabel" class="text-xs font-bold text-blue-600 tracking-widest uppercase">ご鑑賞作品について</span>
-                <span id="stepIndicator" class="text-lg font-black text-gray-900 tabular-nums">01 <span class="text-sm font-normal text-gray-400">/ 07</span></span>
+    <header id="headerArea" class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-2xl mx-auto px-6 py-5">
+            <div class="flex items-center justify-between mb-3">
+                <span id="categoryLabel" class="category-label">ご鑑賞作品について</span>
+                <span id="stepIndicator" class="step-indicator tabular-nums">01 <span class="text-sm font-normal text-gray-400">/ 07</span></span>
             </div>
-            <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                <div id="progressBar" class="bg-blue-600 h-full w-0 transition-all duration-500 ease-out"></div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
             </div>
+            <div class="mt-2 text-xs text-gray-500 text-right" id="progressText">0% 完了</div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-2xl mx-auto w-full px-6 py-10">
-        <form id="surveyForm" class="space-y-12">
+    <!-- フォントサイズ調整ボタン -->
+    <div class="font-size-control">
+        <button class="font-size-btn" onclick="adjustFontSize('small')" title="文字を小さく">A</button>
+        <button class="font-size-btn" onclick="adjustFontSize('medium')" title="標準サイズ">A</button>
+        <button class="font-size-btn" onclick="adjustFontSize('large')" title="文字を大きく">A</button>
+        <button class="font-size-btn" onclick="adjustFontSize('xlarge')" title="文字を最大に">A</button>
+        <span class="font-size-reset" onclick="resetFontSize()" title="リセット">リセット</span>
+    </div>
+
+    <main class="flex-grow max-w-2xl mx-auto w-full px-6 py-8">
+        <!-- イントロダクション（STEP 1のみ表示） -->
+        <div id="introSection" class="intro-section">
+            <div class="max-w-xl mx-auto">
+                <h1 class="text-3xl font-black mb-4">映画鑑賞アンケート</h1>
+                <p class="text-lg mb-2 opacity-95">あなたの貴重なご意見をお聞かせください</p>
+                <p class="text-sm opacity-80">所要時間：約3-5分 | 全7ステップ</p>
+                <div class="mt-6 flex items-center justify-center gap-2 text-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>簡単・短時間で完了</span>
+                </div>
+            </div>
+        </div>
+
+        <form id="surveyForm" class="space-y-5">
 
             <!-- STEP 1: ご鑑賞いただいた作品について -->
             <div id="step1" class="step active" data-step="1" data-label="ご鑑賞いただいた作品について">
-                <h2 class="text-2xl font-bold mb-8 text-gray-800">ご鑑賞いただいた作品について</h2>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">ご鑑賞いただいた作品について</h2>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q1. ご覧になった作品を教えてください。<span class="req-mark">＊</span></label>
                     <div class="radio-grid mb-4">
                         <input type="radio" name="作品名" id="m1" value="グラディエーターII 英雄再臨" onchange="toggleQ1Other(this)" class="hidden" required><label for="m1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">グラディエーターII 英雄再臨</label>
@@ -104,7 +377,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q2. ご覧になった上映フォーマットをお聞かせください。<span class="req-mark">＊</span></label>
                     <div class="radio-grid mb-6">
                         <input type="radio" name="フォーマット" id="f1" value="通常上映" class="hidden" required><label for="f1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">通常上映</label>
@@ -126,7 +399,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q3. この作品をご覧になるのは、何度目ですか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="鑑賞回数" id="c1" value="初めて" class="hidden" required><label for="c1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">初めて</label>
@@ -137,20 +410,20 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q4. あなたは、この作品を『もう一度、映画館で』鑑賞したいと思いますか？<span class="req-mark">＊</span></label>
                     <div class="space-y-3">
                         <div class="flex items-center"><input type="radio" name="リピート意向" id="r1" value="ぜひもう一度映画館で観たい" class="mr-3" required><label for="r1" class="text-sm">ぜひもう一度映画館で観たい</label></div>
                         <div class="flex items-center"><input type="radio" name="リピート意向" id="r2" value="別フォーマットでもう一度観たい" class="mr-3"><label for="r2" class="text-sm">別フォーマット（IMAXや4DXなど）でもう一度観たい</label></div>
                         <div class="flex items-center"><input type="radio" name="リピート意向" id="r6" value="イベント上映でもう一度観たい" class="mr-3"><label for="r6" class="text-sm">イベント上映（応援上映など）でもう一度観たい</label></div>
-                        <div class="flex items-center"><input type="radio" name="リピート意向" id="r7" value="新たな入場者プレゼントがあればもう一度観たい" class="mr-3"><label for="r7" class="text-sm">新たな入プレがあればもう一度観たい</label></div>
+                        <div class="flex items-center"><input type="radio" name="リピート意向" id="r7" value="新たな入場者プレゼントがあればもう一度観たい" class="mr-3"><label for="r7" class="text-sm">新たな入場者プレゼントがあればもう一度観たい</label></div>
                         <div class="flex items-center"><input type="radio" name="リピート意向" id="r3" value="機会があれば観るかもしれない" class="mr-3"><label for="r3" class="text-sm">機会があれば観るかもしれない</label></div>
                         <div class="flex items-center"><input type="radio" name="リピート意向" id="r4" value="映画館では観ない" class="mr-3"><label for="r4" class="text-sm">映画館では観ない（配信やレンタルで観れば十分）</label></div>
                         <div class="flex items-center"><input type="radio" name="リピート意向" id="r5" value="もう一度観ることはない" class="mr-3"><label for="r5" class="text-sm">もう一度観ることはない</label></div>
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q5. この作品の満足度はいかがでしたか？<span class="req-mark">＊</span></label>
                     <div class="flex gap-2">
                         <div class="flex-1 flex flex-col items-center">
@@ -179,13 +452,13 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q6. ご覧になった作品を、他の人に勧める可能性はどのくらいありますか？<span class="req-mark">＊</span></label>
                     <div id="q5-container" class="rating-grid"></div>
                     <div class="flex justify-between mt-2 text-[10px] text-gray-400 font-bold px-1"><span>0点（全く勧めない）</span><span>10点（強く勧める）</span></div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q7. 作品の中で、特に印象に残った点があれば教えてください。（任意）</label>
                     <textarea name="感想_具体" rows="3" class="w-full p-4 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="シーン、セリフ、気に入ったポイントなど"></textarea>
                 </div>
@@ -195,7 +468,7 @@
             <div id="step2" class="step" data-step="2" data-label="今回の来場について">
                 <h2 class="text-2xl font-bold mb-8 text-gray-800">今回の来場について</h2>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q8. 本日は、どなたとご覧になりましたか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="同行者" id="t1" value="1人で" onchange="toggleQ8(this)" class="hidden" required><label for="t1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">1人で</label>
@@ -206,7 +479,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block" id="q8-block" style="display: none;">
+                <div class="mb-6 question-block" id="q8-block" style="display: none;">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q9. 【2名以上でご覧の方】ご自身を含めた合計人数は何名ですか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="合計人数" id="p1" value="2人" onchange="toggleQ9(this)" class="hidden"><label for="p1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">2人</label>
@@ -216,7 +489,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block" id="q9-block" style="display: none;">
+                <div class="mb-6 question-block" id="q9-block" style="display: none;">
                     <label class="block text-sm font-bold mb-3 text-gray-700">
                         Q10. 【2名以上でご覧の方】ご一緒した方の年代を、当てはまるものすべて選んでください。（複数選択可、人数分まで）<span class="req-mark">＊</span>
                     </label>
@@ -315,7 +588,7 @@
                     </script>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q11. 今回の映画を観に行くことは、いつ頃決めましたか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="決定時期" id="d1" value="当日" class="hidden" required><label for="d1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">当日</label>
@@ -325,19 +598,18 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q12. チケットはどのように購入されましたか？<span class="req-mark">＊</span></label>
                     <div class="space-y-2">
                         <div class="flex items-center"><input type="radio" name="購入方法" id="k1" value="当日窓口" class="mr-3" required><label for="k1" class="text-sm">当日窓口で</label></div>
                         <div class="flex items-center"><input type="radio" name="購入方法" id="k2" value="劇場の公式サイト" class="mr-3"><label for="k2" class="text-sm">劇場の公式サイトで</label></div>
                         <div class="flex items-center"><input type="radio" name="購入方法" id="k3" value="前売り券（ムビチケ）" class="mr-3"><label for="k3" class="text-sm">前売り券（ムビチケ）を購入</label></div>
                         <div class="flex items-center"><input type="radio" name="購入方法" id="k4" value="映画GIFT" class="mr-3"><label for="k4" class="text-sm">映画GIFTを購入</label></div>
-                        <div class="flex items-center"><input type="radio" name="購入方法" id="k5" value="映画サイト" class="mr-3"><label for="k5" class="text-sm">映画サイトで</label></div>
                         <div class="flex items-center"><input type="radio" name="購入方法" id="k6" value="その他" class="mr-3"><label for="k6" class="text-sm">その他</label></div>
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q13. どのような手段で映画館までお越しになりましたか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="来場手段" id="s1" value="電車" class="hidden" required><label for="s1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">電車</label>
@@ -350,7 +622,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q14. 映画館まで片道どのくらいかかりましたか？<span class="req-mark">＊</span></label>
                     <div class="space-y-2">
                         <div class="flex items-center"><input type="radio" name="来場時間" id="h1" value="15分未満" class="mr-3" required><label for="h1" class="text-sm">15分未満</label></div>
@@ -366,7 +638,7 @@
             <div id="step3" class="step" data-step="3" data-label="来場のきっかけについて">
                 <h2 class="text-2xl font-bold mb-8 text-gray-800">来場のきっかけについて</h2>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q15. この作品の情報を最初に知ったのは何ですか？<span class="req-mark">＊</span></label>
                     <div class="space-y-2">
                         <div class="flex items-center"><input type="radio" name="認知媒体" id="n1" value="劇場予告" class="mr-3" required><label for="n1" class="text-sm">劇場での予告編</label></div>
@@ -387,7 +659,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q16. この作品を観ようと決めた、一番の理由は何ですか？<span class="req-mark">＊</span></label>
                     <div class="space-y-2">
                         <div class="flex items-center"><input type="radio" name="決定理由" id="g1" value="キャスト・監督" class="mr-3" required><label for="g1" class="text-sm">好きな監督・俳優が出演</label></div>
@@ -404,85 +676,12 @@
                 </div>
             </div>
 
-            <!-- STEP 4: 劇場体験の評価 (Q15, 17) -->
+            <!-- STEP 4: 劇場体験の評価 -->
             <div id="step4" class="step" data-step="4" data-label="劇場体験の評価">
                 <h2 class="text-2xl font-bold mb-8 text-gray-800">劇場体験の評価</h2>
 
-                <div class="mb-14 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q17. この映画館を家族や友人にどの程度おすすめしたいですか？<span class="req-mark">＊</span></label>
-                    <div id="q15-container" class="rating-grid"></div>
-                    <div class="flex justify-between mt-2 text-[10px] text-gray-400 font-bold px-1"><span>0点（全く勧めない）</span><span>10点（強く勧める）</span></div>
-                </div>
-
-                <div class="mb-10 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">
-                        Q18. 映画館の特殊スペック（設備）で、あなたが重視するのはどれですか？
-                        <span class="req-mark">＊</span>
-                        <span class="text-xs text-gray-500 ml-2">(最大2つまで選択できます)</span>
-                    </label>
-                    <div class="space-y-3">
-                        <div class="flex items-center">
-                            <input type="checkbox" name="特殊スペック嗜好" id="spec1" value="大画面" class="mr-3" onclick="limitCheckboxes('特殊スペック嗜好', 2)">
-                            <label for="spec1" class="text-sm">画面（大スクリーンなど）</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" name="特殊スペック嗜好" id="spec2" value="音響" class="mr-3" onclick="limitCheckboxes('特殊スペック嗜好', 2)">
-                            <label for="spec2" class="text-sm">音響（高音質システムなど）</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" name="特殊スペック嗜好" id="spec6" value="座席快適" class="mr-3" onclick="limitCheckboxes('特殊スペック嗜好', 2)">
-                            <label for="spec6" class="text-sm">座席（リクライニングシート、プレミアムシート等）</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" name="特殊スペック嗜好" id="spec7" value="映像特殊効果" class="mr-3" onclick="limitCheckboxes('特殊スペック嗜好', 2)">
-                            <label for="spec7" class="text-sm">映像の特殊効果（3D, 4DX, ScreenX など）</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" name="特殊スペック嗜好" id="spec8" value="バリアフリー" class="mr-3" onclick="limitCheckboxes('特殊スペック嗜好', 2)">
-                            <label for="spec8" class="text-sm">バリアフリー・アクセシビリティ（車椅子対応, UDトーク, 補聴設備等）</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" name="特殊スペック嗜好" id="spec5" value="その他" class="mr-3" onclick="limitCheckboxes('特殊スペック嗜好', 2)">
-                            <label for="spec5" class="text-sm">その他</label>
-                        </div>
-                        <script>
-                        // 最大2つまで選択可
-                        function limitCheckboxes(name, max) {
-                            const checkboxes = document.querySelectorAll('input[type="checkbox"][name="' + name + '"]');
-                            const checked = Array.from(checkboxes).filter(cb => cb.checked);
-                            if (checked.length > max) {
-                                event.target.checked = false;
-                            }
-                        }
-                        </script>
-                    </div>
-                </div>
-
-                <div class="mb-10 question-block">
-                    <label class="block text-sm font-bold mb-5 text-gray-700 leading-relaxed">Q19. 今回の劇場体験について、各項目の満足度を教えてください。<span class="req-mark">＊</span></label>
-                    <div id="matrix-container" class="space-y-8"></div>
-                </div>
-            </div>
-
-            <!-- STEP 5: サービスと次回の期待 (Q16, 18, 19, 20) -->
-            <div id="step5" class="step" data-step="5" data-label="サービスと次回の期待">
-                <h2 class="text-2xl font-bold mb-8 text-gray-800">サービスと次回の期待</h2>
-
-                <div class="mb-10 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q20. 本日、この映画館を選んだ一番の理由は何ですか？<span class="req-mark">＊</span></label>
-                    <div class="radio-grid">
-                        <input type="radio" name="劇場選択理由" id="p_r1" value="立地が便利だから" class="hidden" required><label for="p_r1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">立地が便利だから</label>
-                        <input type="radio" name="劇場選択理由" id="p_r2" value="上映時間が都合よかったから" class="hidden"><label for="p_r2" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">上映時間が都合よかったから</label>
-                        <input type="radio" name="劇場選択理由" id="p_r3" value="使いたい会員サービスがあったから" class="hidden"><label for="p_r3" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">使いたい会員サービスがあったから</label>
-                        <input type="radio" name="劇場選択理由" id="p_r4" value="特別な設備で観たかったから" class="hidden"><label for="p_r4" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">特別な設備で観たかったから</label>
-                        <input type="radio" name="劇場選択理由" id="p_r7" value="観たい作品がここしかやっていなかったから" class="hidden"><label for="p_r7" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">観たい作品がここしかやっていなかったから</label>
-                        <input type="radio" name="劇場選択理由" id="p_r5" value="いつも利用しているから" class="hidden"><label for="p_r5" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">いつも利用しているから</label>
-                        <input type="radio" name="劇場選択理由" id="p_r6" value="その他" class="hidden"><label for="p_r6" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">その他</label>
-                    </div>
-                </div>
-
-                <div class="mb-10 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q21. 本日、映画館でフードやドリンクを購入しましたか？<span class="req-mark">＊</span></label>
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q17. 本日、映画館でフードやドリンクを購入しましたか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="飲食購入" id="con1" value="購入した" class="hidden" required onchange="toggleFoodSatisfaction(this)">
                         <label for="con1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">購入した</label>
@@ -492,7 +691,7 @@
 
                     <div id="foodSatisfactionBlock" class="mt-6 hidden">
                         <div class="mb-5">
-                            <label class="block text-sm font-bold mb-2 text-gray-700">Q21-1. 購入した商品の満足度を教えてください。<span class="req-mark">＊</span></label>
+                            <label class="block text-sm font-bold mb-2 text-gray-700">Q17-1. 購入した商品の満足度を教えてください。<span class="req-mark">＊</span></label>
                             <div class="flex gap-2">
                                 <div class="flex-1 flex flex-col items-center">
                                     <input type="radio" name="商品満足度" id="food_sat1" value="1" class="hidden" required>
@@ -520,7 +719,7 @@
                             </div>
                         </div>
                         <div class="mb-5">
-                            <label class="block text-sm font-bold mb-2 text-gray-700">Q20-2. フード・ドリンクの提供スピードの満足度を教えてください。<span class="req-mark">＊</span></label>
+                            <label class="block text-sm font-bold mb-2 text-gray-700">Q17-2. フード・ドリンクの提供スピードの満足度を教えてください。<span class="req-mark">＊</span></label>
                             <div class="flex gap-2">
                                 <div class="flex-1 flex flex-col items-center">
                                     <input type="radio" name="提供スピード満足度" id="speed_sat1" value="1" class="hidden" required>
@@ -548,7 +747,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-2 text-gray-700">Q20-3. フードやドリンクのラインナップの満足度を教えてください。<span class="req-mark">＊</span></label>
+                            <label class="block text-sm font-bold mb-2 text-gray-700">Q17-3. フードやドリンクのラインナップの満足度を教えてください。<span class="req-mark">＊</span></label>
                             <div class="flex gap-2">
                                 <div class="flex-1 flex flex-col items-center">
                                     <input type="radio" name="ラインナップ満足度" id="lineup_sat1" value="1" class="hidden" required>
@@ -597,13 +796,181 @@
                     </script>
                 </div>
 
-                <div class="mb-10 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q22. 映画館へのご希望やご意見がございましたら、お聞かせください。（任意）</label>
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q18. パンフレットやグッズは購入しましたか？<span class="req-mark">＊</span></label>
+                    <div class="radio-grid">
+                        <input type="radio" name="パンフレットグッズ購入" id="goods1" value="購入した" class="hidden" required>
+                        <label for="goods1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">購入した</label>
+                        <input type="radio" name="パンフレットグッズ購入" id="goods2" value="購入しなかった" class="hidden">
+                        <label for="goods2" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">購入しなかった</label>
+                    </div>
+                </div>
+
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-5 text-gray-700 leading-relaxed">Q19. 今回の劇場体験について、各項目の満足度を教えてください。<span class="req-mark">＊</span></label>
+                    <div id="matrix-container" class="space-y-4"></div>
+                </div>
+
+                <div class="mb-8 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q20. この映画館を家族や友人にどの程度おすすめしたいですか？<span class="req-mark">＊</span></label>
+                    <div id="q15-container" class="rating-grid"></div>
+                    <div class="flex justify-between mt-2 text-[10px] text-gray-400 font-bold px-1"><span>0点（全く勧めない）</span><span>10点（強く勧める）</span></div>
+                </div>
+
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">
+                        Q21. 映画館で、あなたが重視する要素はどれですか？
+                        <span class="req-mark">＊</span>
+                        <span class="text-xs text-gray-500 ml-2">(最大2つまで選択できます)</span>
+                    </label>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec1" value="大画面" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec1" class="text-sm">画面（大スクリーンなど）</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec2" value="音響" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec2" class="text-sm">音響（高音質システムなど）</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec3" value="座席快適" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec3" class="text-sm">座席（リクライニングシート、プレミアムシート等）</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec4" value="映像特殊効果" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec4" class="text-sm">映像の特殊効果（3D, 4DX, ScreenX など）</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec5" value="フードドリンク" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec5" class="text-sm">フード・ドリンクの充実度</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec6" value="グッズ売り場" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec6" class="text-sm">グッズ売り場の充実度</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec7" value="アクセス立地" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec7" class="text-sm">アクセス・立地の良さ</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec8" value="チケット購入" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec8" class="text-sm">チケット購入のしやすさ</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec9" value="館内清潔" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec9" class="text-sm">館内の清潔さ</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec10" value="スタッフ接客" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec10" class="text-sm">スタッフの接客・案内</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec11" value="バリアフリー" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <label for="spec11" class="text-sm">バリアフリー・アクセシビリティ（車椅子対応, UDトーク, 補聴設備等）</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="映画館重視要素" id="spec12" value="その他" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)" onchange="toggleQ21Other(this)">
+                            <label for="spec12" class="text-sm">その他</label>
+                        </div>
+                        <script>
+                        // 最大2つまで選択可
+                        function limitCheckboxes(name, max) {
+                            const checkboxes = document.querySelectorAll('input[type="checkbox"][name="' + name + '"]');
+                            const checked = Array.from(checkboxes).filter(cb => cb.checked);
+                            if (checked.length > max) {
+                                event.target.checked = false;
+                            }
+                        }
+                        </script>
+                    </div>
+                    <div id="q21_other_container" class="mt-4 hidden">
+                        <input type="text" id="q21_other_input" name="映画館重視要素_自由入力" class="w-full p-4 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="その他の要素をご記入ください（任意）">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: サービスと次回の期待 (Q16, 18, 19, 20) -->
+            <div id="step5" class="step" data-step="5" data-label="サービスと次回の期待">
+                <h2 class="text-2xl font-bold mb-8 text-gray-800">サービスと次回の期待</h2>
+
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">
+                        Q22. 本日、この映画館を選んだ理由は何ですか？（複数選択可）<span class="req-mark">＊</span>
+                    </label>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r1" value="立地が便利だから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r1" class="text-sm">立地が便利だから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r2" value="上映時間が都合よかったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r2" class="text-sm">上映時間が都合よかったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r3" value="使いたい会員サービスがあったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r3" class="text-sm">使いたい会員サービスがあったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r4" value="特別な設備で観たかったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r4" class="text-sm">特別な設備で観たかったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r5" value="観たい作品がここしかやっていなかったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r5" class="text-sm">観たい作品がここしかやっていなかったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r6" value="料金が安かったから・割引があったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r6" class="text-sm">料金が安かったから・割引があったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r7" value="駐車場が充実していたから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r7" class="text-sm">駐車場が充実していたから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r8" value="フード・ドリンクのラインナップが良かったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r8" class="text-sm">フード・ドリンクのラインナップが良かったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r9" value="グッズ売り場が充実していたから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r9" class="text-sm">グッズ売り場が充実していたから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r10" value="館内が清潔だったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r10" class="text-sm">館内が清潔だったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r11" value="オンライン予約が便利だったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r11" class="text-sm">オンライン予約が便利だったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r12" value="友人・家族に勧められたから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r12" class="text-sm">友人・家族に勧められたから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r13" value="過去に良い体験があったから" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r13" class="text-sm">過去に良い体験があったから</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r14" value="その他" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r14" class="text-sm">その他</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="劇場選択理由" id="p_r15" value="特にない" class="mr-3" onchange="handleQ22Checkbox(this)">
+                            <label for="p_r15" class="text-sm">特にない</label>
+                        </div>
+                    </div>
+                    <div id="q22_other_container" class="mt-4 hidden">
+                        <input type="text" id="q22_other_input" name="劇場選択理由_自由入力" class="w-full p-4 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="その他の理由をご記入ください（任意）">
+                    </div>
+                </div>
+
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q23. 映画館へのご希望やご意見がございましたら、お聞かせください。（任意）</label>
                     <textarea name="劇場意見" rows="3" class="w-full p-4 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="こちらにご記入ください"></textarea>
                 </div>
 
-                <div class="mb-10 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q23. 今後公開予定の作品で、もっとも「鑑賞したい」思う作品を教えてください。<span class="req-mark">＊</span></label>
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q24. 今後公開予定の作品で、もっとも「鑑賞したい」思う作品を教えてください。<span class="req-mark">＊</span></label>
                     <div class="radio-grid mb-4">
                         <input type="radio" name="次回鑑賞期待作" id="up1" value="ミッション：インポッシブル／ファイナル・レコニング" onchange="toggleQ20OtherRadio(this)" class="hidden" required><label for="up1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">ミッション：インポッシブル／ファイナル・レコニング</label>
                         <input type="radio" name="次回鑑賞期待作" id="up2" value="ソニック × シャドウ TOKYO MISSION" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up2" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">ソニック × シャドウ TOKYO MISSION</label>
@@ -627,20 +994,7 @@
             <div id="step6" class="step" data-step="6" data-label="お客様・普段の鑑賞について">
                 <h2 class="text-2xl font-bold mb-8 text-gray-800">お客様・普段の鑑賞について</h2>
 
-                <div class="mb-10 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q24. 映画館で鑑賞する際に最も魅力に感じることは何ですか？<span class="req-mark">＊</span></label>
-                    <div class="space-y-2">
-                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c1" value="没入感" class="mr-3" required><label for="m_c1" class="text-sm">大画面・音響による没入感</label></div>
-                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c2" value="集中できる環境" class="mr-3"><label for="m_c2" class="text-sm">作品に集中できる環境</label></div>
-                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c3" value="非日常" class="mr-3"><label for="m_c3" class="text-sm">非日常的な体験</label></div>
-                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c4" value="感動" class="mr-3"><label for="m_c4" class="text-sm">深い感動や心の高まり</label></div>
-                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c5" value="一体感" class="mr-3"><label for="m_c5" class="text-sm">他の観客との一体感</label></div>
-                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c6" value="イベント感" class="mr-3"><label for="m_c6" class="text-sm">映画館へ行くというイベント感</label></div>
-                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c7" value="その他" class="mr-3"><label for="m_c7" class="text-sm">その他</label></div>
-                    </div>
-                </div>
-
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q25. 性別と年代をお聞かせください。<span class="req-mark">＊</span></label>
                     <div class="mb-6">
                         <p class="text-xs font-bold text-gray-400 mb-3">性別</p>
@@ -665,7 +1019,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q26. 映画館での鑑賞頻度（年間）を教えてください。<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="鑑賞頻度" id="fr1" value="年1～4回" class="hidden" required><label for="fr1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">年1～4回</label>
@@ -674,7 +1028,7 @@
                     </div>
                 </div>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q27. （今回を除いて）前回映画館で鑑賞したのはいつ頃ですか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="前回鑑賞" id="las1" value="1週間以内" class="hidden" required><label for="las1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">1週間以内</label>
@@ -686,6 +1040,19 @@
                         <input type="radio" name="前回鑑賞" id="las7" value="初めて" class="hidden"><label for="las7" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">初めて</label>
                     </div>
                 </div>
+
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q28. 映画館で鑑賞する際に最も魅力に感じることは何ですか？<span class="req-mark">＊</span></label>
+                    <div class="space-y-2">
+                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c1" value="没入感" class="mr-3" required><label for="m_c1" class="text-sm">大画面・音響による没入感</label></div>
+                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c2" value="集中できる環境" class="mr-3"><label for="m_c2" class="text-sm">作品に集中できる環境</label></div>
+                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c3" value="非日常" class="mr-3"><label for="m_c3" class="text-sm">非日常的な体験</label></div>
+                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c4" value="感動" class="mr-3"><label for="m_c4" class="text-sm">深い感動や心の高まり</label></div>
+                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c5" value="一体感" class="mr-3"><label for="m_c5" class="text-sm">他の観客との一体感</label></div>
+                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c6" value="イベント感" class="mr-3"><label for="m_c6" class="text-sm">映画館へ行くというイベント感</label></div>
+                        <div class="flex items-center"><input type="radio" name="映画館の魅力" id="m_c7" value="その他" class="mr-3"><label for="m_c7" class="text-sm">その他</label></div>
+                    </div>
+                </div>
             </div>
 
             <!-- STEP 7: ご連絡先（プレゼント応募・規約） -->
@@ -693,7 +1060,7 @@
                 <h2 class="text-2xl font-bold mb-2 text-gray-800">抽選で映画鑑賞券をプレゼント！</h2>
                 <p class="text-sm text-gray-500 mb-8 leading-relaxed">アンケートにご協力いただいた感謝として、抽選で素敵なプレゼントをご用意しています。応募されますか？</p>
 
-                <div class="mb-10 question-block">
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">プレゼントに応募されますか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="プレゼント応募" id="p_yes" value="応募する" onchange="toggleEmail(true)" class="hidden" required>
@@ -724,8 +1091,8 @@
                         </div>
                     </div>
 
-                    <div class="mb-10 question-block bg-white border border-gray-100 p-6 rounded-2xl shadow-sm">
-                        <label class="block text-sm font-bold mb-3 text-gray-700">Q28. メールアドレスを教えてください。<span class="req-mark">＊</span></label>
+                    <div class="mb-6 question-block bg-white border border-gray-100 p-6 rounded-2xl shadow-sm">
+                        <label class="block text-sm font-bold mb-3 text-gray-700">Q29. メールアドレスを教えてください。<span class="req-mark">＊</span></label>
                         <input type="email" name="メールアドレス" id="emailInput" class="w-full p-4 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="example@mail.com">
                         <p class="text-[10px] text-gray-400 mt-4 leading-relaxed italic">※上記内容に同意の上、正確なアドレスをご記入ください。</p>
                     </div>
@@ -733,27 +1100,43 @@
             </div>
 
             <!-- ナビゲーション -->
-            <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-100">
-                <button type="button" id="prevBtn" onclick="changeStep(-1)" class="hidden px-8 py-4 text-gray-400 font-bold hover:text-gray-600 transition-all">戻る</button>
+            <div class="flex justify-between items-center mt-10 pt-8 border-t-2 border-gray-100">
+                <button type="button" id="prevBtn" onclick="changeStep(-1)" class="btn-secondary hidden">
+                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    戻る
+                </button>
                 <div class="flex-1"></div>
-                <button type="button" id="nextBtn" onclick="changeStep(1)" class="bg-gray-900 text-white px-12 py-4 rounded-2xl font-bold hover:bg-gray-800 transition-all shadow-lg shadow-gray-200">次へ</button>
-                <button type="submit" id="submitBtn" class="hidden bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
-                    <span id="spinner" class="hidden animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+                <button type="button" id="nextBtn" onclick="changeStep(1)" class="btn-primary">
+                    次へ
+                    <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+                <button type="submit" id="submitBtn" class="btn-primary hidden">
+                    <span id="spinner" class="hidden animate-spin inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></span>
                     <span id="btnText">アンケートを送信する</span>
+                    <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
                 </button>
             </div>
         </form>
 
         <div id="thanksPage" class="hidden text-center py-20 animate-slideUp">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-green-100 text-green-600 rounded-full mb-8">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full mb-8 shadow-lg animate-pulse">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
             </div>
-            <h2 class="text-3xl font-black mb-4 text-gray-900">ご回答ありがとうございました</h2>
-            <p class="text-gray-500 leading-relaxed mb-6">お客様の貴重なご意見は、今後の作品選びや<br>劇場サービスの向上に役立てさせていただきます。</p>
-            <div id="presentNote" class="hidden bg-blue-50 p-4 rounded-xl text-blue-700 text-sm font-bold mb-10">
+            <h2 class="text-4xl font-black mb-6 text-gray-900">ご回答ありがとうございました！</h2>
+            <p class="text-lg text-gray-600 leading-relaxed mb-8 max-w-md mx-auto">お客様の貴重なご意見は、今後の作品選びや<br>劇場サービスの向上に役立てさせていただきます。</p>
+            <div id="presentNote" class="hidden bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl text-blue-700 text-base font-bold mb-10 max-w-md mx-auto border-2 border-blue-200 shadow-md">
+                <svg class="w-6 h-6 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                </svg>
                 プレゼントへの応募を受け付けました。抽選結果をお楽しみに！
             </div>
-            <button onclick="location.reload()" class="text-blue-600 font-bold hover:underline">最初の画面に戻る</button>
+            <button onclick="location.reload()" class="btn-secondary">最初の画面に戻る</button>
         </div>
     </main>
 
@@ -768,7 +1151,91 @@
         const totalSteps = 7;
         const matrixItems = ["アクセス・立地", "チケット購入のスムーズさ", "劇場の雰囲気・質", "トイレや館内の清潔さ", "スクリーン・音響の設備", "スタッフの接客・案内"];
 
+        // フォントサイズ調整機能
+        function adjustFontSize(size) {
+            const body = document.body;
+            body.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge');
+            
+            if (size === 'small') {
+                body.classList.add('font-small');
+                body.style.fontSize = '14px';
+            } else if (size === 'medium') {
+                body.classList.add('font-medium');
+                body.style.fontSize = '16px';
+            } else if (size === 'large') {
+                body.classList.add('font-large');
+                body.style.fontSize = '18px';
+            } else if (size === 'xlarge') {
+                body.classList.add('font-xlarge');
+                body.style.fontSize = '20px';
+            }
+            
+            // ローカルストレージに保存
+            localStorage.setItem('fontSize', size);
+            
+            // すべての要素のフォントサイズを調整
+            adjustAllFontSizes(size);
+        }
+
+        function adjustAllFontSizes(size) {
+            const baseSizes = {
+                small: { base: 14, label: 13, small: 11, h1: 24, h2: 20, lg: 16, introText: 12 },
+                medium: { base: 16, label: 15, small: 12, h1: 30, h2: 28, lg: 18, introText: 14 },
+                large: { base: 18, label: 17, small: 14, h1: 34, h2: 32, lg: 20, introText: 16 },
+                xlarge: { base: 20, label: 19, small: 16, h1: 38, h2: 36, lg: 22, introText: 18 }
+            };
+            
+            const sizes = baseSizes[size] || baseSizes.medium;
+            
+            // 質問ラベルのフォントサイズ
+            document.querySelectorAll('.question-block label').forEach(label => {
+                label.style.fontSize = sizes.label + 'px';
+            });
+            
+            // 小さいテキスト
+            document.querySelectorAll('.text-xs, .text-\\[9px\\], .text-\\[10px\\], .text-\\[11px\\]').forEach(el => {
+                el.style.fontSize = sizes.small + 'px';
+            });
+            
+            // h1とh2は固定値で調整（現在のサイズを基準にしない）
+            document.querySelectorAll('h1').forEach(el => {
+                el.style.fontSize = sizes.h1 + 'px';
+            });
+            document.querySelectorAll('h2').forEach(el => {
+                el.style.fontSize = sizes.h2 + 'px';
+            });
+            
+            // イントロダクションセクションのテキスト
+            document.querySelectorAll('.intro-section .text-lg').forEach(el => {
+                el.style.fontSize = sizes.lg + 'px';
+            });
+            document.querySelectorAll('.intro-section .text-sm, .intro-section span').forEach(el => {
+                el.style.fontSize = sizes.introText + 'px';
+            });
+        }
+
+        function resetFontSize() {
+            document.body.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge');
+            document.body.style.fontSize = '';
+            
+            // すべての要素のスタイルをリセット
+            document.querySelectorAll('.question-block label, .text-xs, h1, h2, .intro-section .text-lg, .intro-section .text-sm, .intro-section span').forEach(el => {
+                el.style.fontSize = '';
+            });
+            
+            localStorage.removeItem('fontSize');
+        }
+
+        // ページ読み込み時に保存されたフォントサイズを復元
+        function loadFontSize() {
+            const savedSize = localStorage.getItem('fontSize');
+            if (savedSize) {
+                adjustFontSize(savedSize);
+            }
+        }
+
         window.onload = function() {
+            loadFontSize(); // 保存されたフォントサイズを復元
             initRatings('q5-container', '点数_作品の推奨度');
             initRatings('q15-container', '点数_劇場の推奨度');
             initMatrix();
@@ -797,7 +1264,7 @@
             const levels = [{v:1, t:"期待を大きく下回っていた"}, {v:2, t:"期待を少し下回っていた"}, {v:3, t:"期待通りだった"}, {v:4, t:"期待を少し上回っていた"}, {v:5, t:"期待を大きく上回っていた"}];
             const container = document.getElementById('matrix-container');
             matrixItems.forEach((item, idx) => {
-                let rowHtml = `<div class="matrix-row border-b border-gray-50 pb-8 mb-8 last:border-0 last:pb-0"><p class="font-bold mb-5 text-sm text-gray-800"><span class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 text-gray-400 rounded-md text-[10px] mr-2">${idx+1}</span>${item}</p><div class="flex gap-2">`;
+                let rowHtml = `<div class="matrix-row border-b border-gray-50 pb-4 mb-4 last:border-0 last:pb-0"><p class="font-bold mb-3 text-sm text-gray-800"><span class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 text-gray-400 rounded-md text-[10px] mr-2">${idx+1}</span>${item}</p><div class="flex gap-2">`;
                 levels.forEach(lvl => {
                     rowHtml += `<div class="flex-1 flex flex-col items-center"><input type="radio" name="満足度_${item}" id="m_${idx}_${lvl.v}" value="${lvl.t}" class="hidden" required><label for="m_${idx}_${lvl.v}" class="w-full max-w-[48px] border border-gray-200 py-3 rounded-xl text-center cursor-pointer hover:border-blue-300 transition-all text-xs bg-white">${lvl.v}</label><span class="text-[9px] text-gray-400 mt-2 text-center leading-tight">${lvl.t.replace('期待を', '期待<br>').replace('回っていた', '回った')}</span></div>`;
                 });
@@ -894,6 +1361,74 @@
             }
         }
 
+        function toggleQ21Other(el) {
+            const container = document.getElementById('q21_other_container');
+            const input = document.getElementById('q21_other_input');
+            if (el.checked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                input.value = '';
+            }
+        }
+
+        function toggleQ22Other(el) {
+            const container = document.getElementById('q22_other_container');
+            const input = document.getElementById('q22_other_input');
+            if (el.checked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                input.value = '';
+            }
+        }
+
+        function handleQ22Checkbox(el) {
+            const noneCheckbox = document.getElementById('p_r15');
+            const otherCheckboxes = document.querySelectorAll('input[type="checkbox"][name="劇場選択理由"]:not(#p_r15)');
+            
+            if (el.id === 'p_r15') {
+                // 「特にない」が選択された場合
+                if (el.checked) {
+                    // 他のすべてのチェックボックスを無効化し、チェックを外す
+                    otherCheckboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = true;
+                    });
+                    // 「その他」のフリーアンサー欄を非表示
+                    const otherContainer = document.getElementById('q22_other_container');
+                    if (otherContainer) {
+                        otherContainer.classList.add('hidden');
+                        const otherInput = document.getElementById('q22_other_input');
+                        if (otherInput) otherInput.value = '';
+                    }
+                } else {
+                    // 「特にない」が外された場合、他のチェックボックスを有効化
+                    otherCheckboxes.forEach(cb => {
+                        cb.disabled = false;
+                    });
+                }
+            } else {
+                // 他の選択肢が選択された場合
+                if (el.checked) {
+                    // 「特にない」を無効化し、チェックを外す
+                    noneCheckbox.checked = false;
+                    noneCheckbox.disabled = true;
+                } else {
+                    // 他の選択肢がすべて外された場合、「特にない」を有効化
+                    const anyChecked = Array.from(otherCheckboxes).some(cb => cb.checked);
+                    if (!anyChecked) {
+                        noneCheckbox.disabled = false;
+                    }
+                }
+                
+                // 「その他」の処理
+                if (el.id === 'p_r14') {
+                    toggleQ22Other(el);
+                }
+            }
+        }
+
         function changeStep(n) {
             if (n > 0 && !validateStep(currentStep)) return;
             const steps = document.querySelectorAll('.step');
@@ -908,11 +1443,34 @@
             document.getElementById('prevBtn').classList.toggle('hidden', currentStep === 1);
             document.getElementById('nextBtn').classList.toggle('hidden', currentStep === totalSteps);
             document.getElementById('submitBtn').classList.toggle('hidden', currentStep !== totalSteps);
-            const progress = (currentStep / totalSteps * 100);
+            
+            // 進捗計算：最初のステップは0%、各ステップ完了時に進捗を更新
+            // STEP 1完了時（STEP 2に進む時）に14%と表示
+            const progress = currentStep === 1 ? 0 : ((currentStep - 1) / totalSteps * 100);
             document.getElementById('progressBar').style.width = progress + '%';
             document.getElementById('stepIndicator').innerHTML = `${currentStep.toString().padStart(2, '0')} <span class="text-sm font-normal text-gray-400">/ 0${totalSteps}</span>`;
             const activeStep = document.querySelector('.step.active');
             document.getElementById('categoryLabel').innerText = activeStep ? activeStep.dataset.label : '';
+            
+            // 進捗テキストを更新
+            const progressText = document.getElementById('progressText');
+            if (progressText) {
+                if (currentStep === 1) {
+                    progressText.textContent = '開始';
+                } else {
+                    progressText.textContent = Math.round(progress) + '% 完了';
+                }
+            }
+            
+            // イントロダクションの表示/非表示
+            const introSection = document.getElementById('introSection');
+            if (introSection) {
+                if (currentStep === 1) {
+                    introSection.classList.remove('hidden');
+                } else {
+                    introSection.classList.add('hidden');
+                }
+            }
         }
 
         function validateStep(step) {
@@ -935,6 +1493,10 @@
                 } else if (inputs[0].type === 'checkbox' && inputs[0].name === '同伴者年代') {
                     // 同伴者年代のチェックボックス：表示されている場合、少なくとも1つ選択されている必要がある
                     const checkedBoxes = block.querySelectorAll('input[type="checkbox"][name="同伴者年代"]:checked');
+                    answered = checkedBoxes.length > 0;
+                } else if (inputs[0].type === 'checkbox' && inputs[0].name === '劇場選択理由') {
+                    // 劇場選択理由のチェックボックス：少なくとも1つ選択されている必要がある
+                    const checkedBoxes = block.querySelectorAll('input[type="checkbox"][name="劇場選択理由"]:checked');
                     answered = checkedBoxes.length > 0;
                 } else {
                     const req = inputs[0].hasAttribute('required') || (inputs[0].type === 'radio' && inputs[0].required);
