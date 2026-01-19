@@ -316,7 +316,7 @@
         <div class="max-w-2xl mx-auto px-6 py-5">
             <div class="flex items-center justify-between mb-3">
                 <span id="categoryLabel" class="category-label">ご鑑賞作品について</span>
-                <span id="stepIndicator" class="step-indicator tabular-nums">01 <span class="text-sm font-normal text-gray-400">/ 07</span></span>
+                <span id="stepIndicator" class="step-indicator tabular-nums">01 <span class="text-sm font-normal text-gray-400">/ 08</span></span>
             </div>
             <div class="progress-container">
                 <div id="progressBar" class="progress-bar"></div>
@@ -340,7 +340,7 @@
             <div class="max-w-xl mx-auto">
                 <h1 class="text-3xl font-black mb-4">映画鑑賞アンケート</h1>
                 <p class="text-lg mb-2 opacity-95">あなたの貴重なご意見をお聞かせください</p>
-                <p class="text-sm opacity-80">所要時間：約3-5分 | 全7ステップ</p>
+                <p class="text-sm opacity-80">所要時間：約3-5分 | 全8ステップ</p>
                 <div class="mt-6 flex items-center justify-center gap-2 text-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -681,6 +681,33 @@
                 <h2 class="text-2xl font-bold mb-8 text-gray-800">劇場体験の評価</h2>
 
                 <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q16. 本日、どの劇場でご鑑賞になりましたか？<span class="req-mark">＊</span></label>
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-gray-500 mb-2">シネコン</label>
+                        <select name="シネコン" id="cinema-chain" class="w-full p-3 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm" required onchange="updateTheaterList()">
+                            <option value="">選択してください</option>
+                            <option value="イオンシネマ">イオンシネマ</option>
+                            <option value="MOVIX">MOVIX</option>
+                            <option value="TJOY">TJOY</option>
+                            <option value="TOHOシネマズ">TOHOシネマズ</option>
+                            <option value="シネマサンシャイン">シネマサンシャイン</option>
+                            <option value="109シネマズ">109シネマズ</option>
+                            <option value="ユナイテッド・シネマ">ユナイテッド・シネマ</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+                    <div id="theater-select-container">
+                        <label class="block text-xs font-bold text-gray-500 mb-2">劇場名</label>
+                        <select name="劇場名" id="theater-name" class="w-full p-3 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm" required>
+                            <option value="">まずシネコンを選択してください</option>
+                        </select>
+                    </div>
+                    <div id="theater-other-container" class="mt-4 hidden">
+                        <input type="text" id="theater-other-input" name="劇場名_自由入力" class="w-full p-3 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm" placeholder="劇場名をご記入ください">
+                    </div>
+                </div>
+
+                <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q17. 本日、映画館でフードやドリンクを購入しましたか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
                         <input type="radio" name="飲食購入" id="con1" value="購入した" class="hidden" required onchange="toggleFoodSatisfaction(this)">
@@ -807,8 +834,102 @@
                 </div>
 
                 <div class="mb-6 question-block">
-                    <label class="block text-sm font-bold mb-5 text-gray-700 leading-relaxed">Q19. 今回の劇場体験について、各項目の満足度を教えてください。<span class="req-mark">＊</span></label>
-                    <div id="matrix-container" class="space-y-4"></div>
+                    <label class="block text-sm font-bold mb-4 text-gray-700 leading-relaxed">Q19. 今回の劇場体験について、各項目の満足度を教えてください。<span class="req-mark">＊</span></label>
+                    <style>
+                        .q19-row {
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 12px;
+                            border-bottom: 1px solid #e5e7eb;
+                            transition: background-color 0.2s;
+                        }
+                        .q19-row:hover {
+                            background-color: #f9fafb;
+                        }
+                        .q19-row:last-child {
+                            border-bottom: none;
+                        }
+                        .q19-item-name {
+                            flex: 1;
+                            min-width: 0;
+                            font-size: 13px;
+                            font-weight: 600;
+                            color: #374151;
+                            line-height: 1.4;
+                        }
+                        .q19-options {
+                            display: flex;
+                            gap: 4px;
+                            flex-shrink: 0;
+                        }
+                        .q19-option {
+                            position: relative;
+                        }
+                        .q19-option input[type="radio"] {
+                            position: absolute;
+                            opacity: 0;
+                            pointer-events: none;
+                        }
+                        .q19-option label {
+                            display: inline-block;
+                            padding: 6px 8px;
+                            border: 1.5px solid #d1d5db;
+                            border-radius: 6px;
+                            font-size: 11px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            white-space: nowrap;
+                            background: white;
+                            color: #6b7280;
+                            min-width: 40px;
+                            text-align: center;
+                        }
+                        .q19-option input[type="radio"]:checked + label {
+                            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+                            color: white;
+                            border-color: #2563eb;
+                            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+                            transform: scale(1.05);
+                        }
+                        .q19-option label:hover {
+                            border-color: #3b82f6;
+                            background: #eff6ff;
+                        }
+                        .q19-option .q19-label-text {
+                            font-size: 9px;
+                            color: #9ca3af;
+                            margin-top: 2px;
+                            line-height: 1.2;
+                        }
+                        @media (max-width: 640px) {
+                            .q19-row {
+                                flex-direction: column;
+                                align-items: flex-start;
+                                gap: 8px;
+                                padding: 10px;
+                            }
+                            .q19-item-name {
+                                width: 100%;
+                                margin-bottom: 4px;
+                            }
+                            .q19-options {
+                                width: 100%;
+                                justify-content: space-between;
+                            }
+                            .q19-option {
+                                flex: 1;
+                            }
+                            .q19-option label {
+                                width: 100%;
+                                padding: 8px 4px;
+                                font-size: 10px;
+                                min-width: auto;
+                            }
+                        }
+                    </style>
+                    <div id="matrix-container" class="bg-white border border-gray-200 rounded-xl overflow-hidden"></div>
                 </div>
 
                 <div class="mb-8 question-block">
@@ -821,59 +942,59 @@
                     <label class="block text-sm font-bold mb-3 text-gray-700">
                         Q21. 映画館で、あなたが重視する要素はどれですか？
                         <span class="req-mark">＊</span>
-                        <span class="text-xs text-gray-500 ml-2">(最大2つまで選択できます)</span>
+                        <span class="text-xs text-gray-500 ml-2">(最大3つまで選択できます)</span>
                     </label>
                     <div class="space-y-3">
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec1" value="大画面" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec1" value="大画面" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec1" class="text-sm">画面（大スクリーンなど）</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec2" value="音響" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec2" value="音響" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec2" class="text-sm">音響（高音質システムなど）</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec3" value="座席快適" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec3" value="座席快適" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec3" class="text-sm">座席（リクライニングシート、プレミアムシート等）</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec4" value="映像特殊効果" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec4" value="映像特殊効果" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec4" class="text-sm">映像の特殊効果（3D, 4DX, ScreenX など）</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec5" value="フードドリンク" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec5" value="フードドリンク" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec5" class="text-sm">フード・ドリンクの充実度</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec6" value="グッズ売り場" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec6" value="グッズ売り場" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec6" class="text-sm">グッズ売り場の充実度</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec7" value="アクセス立地" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec7" value="アクセス立地" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec7" class="text-sm">アクセス・立地の良さ</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec8" value="チケット購入" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec8" value="チケット購入" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec8" class="text-sm">チケット購入のしやすさ</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec9" value="館内清潔" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec9" value="館内清潔" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec9" class="text-sm">館内の清潔さ</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec10" value="スタッフ接客" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec10" value="スタッフ接客" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec10" class="text-sm">スタッフの接客・案内</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec11" value="バリアフリー" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)">
+                            <input type="checkbox" name="映画館重視要素" id="spec11" value="バリアフリー" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)">
                             <label for="spec11" class="text-sm">バリアフリー・アクセシビリティ（車椅子対応, UDトーク, 補聴設備等）</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" name="映画館重視要素" id="spec12" value="その他" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 2)" onchange="toggleQ21Other(this)">
+                            <input type="checkbox" name="映画館重視要素" id="spec12" value="その他" class="mr-3" onclick="limitCheckboxes('映画館重視要素', 3)" onchange="toggleQ21Other(this)">
                             <label for="spec12" class="text-sm">その他</label>
                         </div>
                         <script>
-                        // 最大2つまで選択可
+                        // 最大3つまで選択可
                         function limitCheckboxes(name, max) {
                             const checkboxes = document.querySelectorAll('input[type="checkbox"][name="' + name + '"]');
                             const checked = Array.from(checkboxes).filter(cb => cb.checked);
@@ -887,11 +1008,6 @@
                         <input type="text" id="q21_other_input" name="映画館重視要素_自由入力" class="w-full p-4 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="その他の要素をご記入ください（任意）">
                     </div>
                 </div>
-            </div>
-
-            <!-- STEP 5: サービスと次回の期待 (Q16, 18, 19, 20) -->
-            <div id="step5" class="step" data-step="5" data-label="サービスと次回の期待">
-                <h2 class="text-2xl font-bold mb-8 text-gray-800">サービスと次回の期待</h2>
 
                 <div class="mb-6 question-block">
                     <label class="block text-sm font-bold mb-3 text-gray-700">
@@ -968,30 +1084,10 @@
                     <label class="block text-sm font-bold mb-3 text-gray-700">Q23. 映画館へのご希望やご意見がございましたら、お聞かせください。（任意）</label>
                     <textarea name="劇場意見" rows="3" class="w-full p-4 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="こちらにご記入ください"></textarea>
                 </div>
-
-                <div class="mb-6 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q24. 今後公開予定の作品で、もっとも「鑑賞したい」思う作品を教えてください。<span class="req-mark">＊</span></label>
-                    <div class="radio-grid mb-4">
-                        <input type="radio" name="次回鑑賞期待作" id="up1" value="ミッション：インポッシブル／ファイナル・レコニング" onchange="toggleQ20OtherRadio(this)" class="hidden" required><label for="up1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">ミッション：インポッシブル／ファイナル・レコニング</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up2" value="ソニック × シャドウ TOKYO MISSION" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up2" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">ソニック × シャドウ TOKYO MISSION</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up3" value="室町無頼" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up3" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">室町無頼</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up4" value="スノー・ホワイト" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up4" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">スノー・ホワイト</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up5" value="ババンババンバンバンパイア" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up5" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">ババンババンバンバンパイア</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up6" value="サンダーボルト＊" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up6" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">サンダーボルト＊</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up7" value="28年後…" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up7" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">28年後…</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up8" value="スーパーマン" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up8" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">スーパーマン</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up9" value="キャプテン・アメリカ：ブレイブ・ニュー・ワールド" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up9" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">キャプテン・アメリカ：ブレイブ・ニュー・ワールド</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up10" value="アバター：ファイヤー・アンド・アッシュ" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up10" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">アバター：ファイヤー・アンド・アッシュ</label>
-                        <input type="radio" name="次回鑑賞期待作" id="up_other" value="その他" onchange="toggleQ20OtherRadio(this)" class="hidden"><label for="up_other" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">その他</label>
-                    </div>
-                    <div id="q20_other_container" class="mt-3 hidden">
-                        <input type="text" id="q20_other_input" name="次回期待作自由入力" class="w-full p-4 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="作品名をご記入ください">
-                    </div>
-                </div>
             </div>
 
-            <!-- STEP 6: お客様について・普段の鑑賞について -->
-            <div id="step6" class="step" data-step="6" data-label="お客様・普段の鑑賞について">
+            <!-- STEP 5: お客様について・普段の鑑賞について -->
+            <div id="step5" class="step" data-step="5" data-label="お客様・普段の鑑賞について">
                 <h2 class="text-2xl font-bold mb-8 text-gray-800">お客様・普段の鑑賞について</h2>
 
                 <div class="mb-6 question-block">
@@ -1055,15 +1151,383 @@
                 </div>
             </div>
 
-            <!-- STEP 7: ご連絡先（プレゼント応募・規約） -->
-            <div id="step7" class="step" data-step="7" data-label="ご連絡先">
-                <h2 class="text-2xl font-bold mb-2 text-gray-800">抽選で映画鑑賞券をプレゼント！</h2>
-                <p class="text-sm text-gray-500 mb-8 leading-relaxed">アンケートにご協力いただいた感謝として、抽選で素敵なプレゼントをご用意しています。応募されますか？</p>
+            <!-- STEP 6: 中間完了画面（プレゼント応募選択） -->
+            <div id="step6" class="step" data-step="6" data-label="プレゼント応募">
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full mb-6 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-black mb-4 text-gray-900">アンケートへのご協力ありがとうございました！</h2>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+                        お客様の貴重なご意見は、今後の作品選びや<br>劇場サービスの向上に役立てさせていただきます。
+                    </p>
+                    
+                    <div class="mb-8 question-block max-w-xl mx-auto">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800">抽選で映画鑑賞券をプレゼント！</h3>
+                        <p class="text-sm text-gray-600 mb-6 leading-relaxed">
+                            アンケートにご協力いただいた感謝として、抽選で素敵なプレゼントをご用意しています。<br>
+                            あと少し質問に答えるとプレゼントに応募できます。応募されますか？
+                        </p>
+                        <div class="radio-grid">
+                            <input type="radio" name="プレゼント応募選択" id="present_yes" value="応募する" class="hidden" required onchange="handlePresentChoice()">
+                            <label for="present_yes" class="border border-gray-200 p-4 rounded-xl text-center text-sm font-bold cursor-pointer hover:bg-gray-50 bg-white">応募する</label>
+                            <input type="radio" name="プレゼント応募選択" id="present_no" value="しない" class="hidden" required onchange="handlePresentChoice()">
+                            <label for="present_no" class="border border-gray-200 p-4 rounded-xl text-center text-sm font-bold cursor-pointer hover:bg-gray-50 bg-white">応募しない</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7: 次回期待作 -->
+            <div id="step7" class="step" data-step="7" data-label="次回期待作">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">次回期待作</h2>
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl mb-6 border-2 border-blue-200">
+                    <p class="text-sm text-blue-800 font-semibold">
+                        <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                        </svg>
+                        あと少し質問に答えるとプレゼントに応募できます！
+                    </p>
+                </div>
 
                 <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-4 text-gray-700">
+                        Q24. 今後公開予定の作品について、各作品の鑑賞意向を教えてください。
+                    </label>
+                    <p class="text-sm text-gray-600 mb-4">これから話題作が目白押しです！各作品について、あなたの鑑賞意向を選択してください。</p>
+                    
+                    <style>
+                        .q24-row {
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 12px;
+                            border-bottom: 1px solid #e5e7eb;
+                            transition: background-color 0.2s;
+                        }
+                        .q24-row:hover {
+                            background-color: #f9fafb;
+                        }
+                        .q24-row:last-child {
+                            border-bottom: none;
+                        }
+                        .q24-work-name {
+                            flex: 1;
+                            min-width: 0;
+                            font-size: 13px;
+                            font-weight: 600;
+                            color: #374151;
+                            line-height: 1.4;
+                        }
+                        .q24-options {
+                            display: flex;
+                            gap: 6px;
+                            flex-shrink: 0;
+                        }
+                        .q24-option {
+                            position: relative;
+                        }
+                        .q24-option input[type="radio"] {
+                            position: absolute;
+                            opacity: 0;
+                            pointer-events: none;
+                        }
+                        .q24-option label {
+                            display: inline-block;
+                            padding: 6px 10px;
+                            border: 1.5px solid #d1d5db;
+                            border-radius: 6px;
+                            font-size: 11px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            white-space: nowrap;
+                            background: white;
+                            color: #6b7280;
+                            min-width: 50px;
+                            text-align: center;
+                        }
+                        .q24-option input[type="radio"]:checked + label {
+                            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+                            color: white;
+                            border-color: #2563eb;
+                            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+                            transform: scale(1.05);
+                        }
+                        .q24-option label:hover {
+                            border-color: #3b82f6;
+                            background: #eff6ff;
+                        }
+                        @media (max-width: 640px) {
+                            .q24-row {
+                                flex-direction: column;
+                                align-items: flex-start;
+                                gap: 8px;
+                                padding: 10px;
+                            }
+                            .q24-work-name {
+                                width: 100%;
+                                margin-bottom: 4px;
+                            }
+                            .q24-options {
+                                width: 100%;
+                                justify-content: space-between;
+                            }
+                            .q24-option label {
+                                flex: 1;
+                                text-align: center;
+                                padding: 8px 4px;
+                                font-size: 11px;
+                                min-width: auto;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="space-y-1 bg-white border border-gray-200 rounded-xl overflow-hidden" id="q24_expectations_list">
+                        <!-- 作品1: ミッション：インポッシブル／ファイナル・レコニング -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">ミッション：インポッシブル／ファイナル・レコニング</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ミッション：インポッシブル／ファイナル・レコニング" id="up1_1" value="とても観たい" required>
+                                    <label for="up1_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ミッション：インポッシブル／ファイナル・レコニング" id="up1_2" value="観るかも">
+                                    <label for="up1_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ミッション：インポッシブル／ファイナル・レコニング" id="up1_3" value="興味がない">
+                                    <label for="up1_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ミッション：インポッシブル／ファイナル・レコニング" id="up1_4" value="知らない">
+                                    <label for="up1_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品2: ソニック × シャドウ TOKYO MISSION -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">ソニック × シャドウ TOKYO MISSION</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ソニック × シャドウ TOKYO MISSION" id="up2_1" value="とても観たい" required>
+                                    <label for="up2_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ソニック × シャドウ TOKYO MISSION" id="up2_2" value="観るかも">
+                                    <label for="up2_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ソニック × シャドウ TOKYO MISSION" id="up2_3" value="興味がない">
+                                    <label for="up2_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ソニック × シャドウ TOKYO MISSION" id="up2_4" value="知らない">
+                                    <label for="up2_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品3: 室町無頼 -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">室町無頼</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_室町無頼" id="up3_1" value="とても観たい" required>
+                                    <label for="up3_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_室町無頼" id="up3_2" value="観るかも">
+                                    <label for="up3_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_室町無頼" id="up3_3" value="興味がない">
+                                    <label for="up3_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_室町無頼" id="up3_4" value="知らない">
+                                    <label for="up3_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品4: スノー・ホワイト -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">スノー・ホワイト</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スノー・ホワイト" id="up4_1" value="とても観たい" required>
+                                    <label for="up4_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スノー・ホワイト" id="up4_2" value="観るかも">
+                                    <label for="up4_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スノー・ホワイト" id="up4_3" value="興味がない">
+                                    <label for="up4_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スノー・ホワイト" id="up4_4" value="知らない">
+                                    <label for="up4_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品5: ババンババンバンバンパイア -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">ババンババンバンバンパイア</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ババンババンバンバンパイア" id="up5_1" value="とても観たい" required>
+                                    <label for="up5_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ババンババンバンバンパイア" id="up5_2" value="観るかも">
+                                    <label for="up5_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ババンババンバンバンパイア" id="up5_3" value="興味がない">
+                                    <label for="up5_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_ババンババンバンバンパイア" id="up5_4" value="知らない">
+                                    <label for="up5_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品6: サンダーボルト＊ -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">サンダーボルト＊</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_サンダーボルト＊" id="up6_1" value="とても観たい" required>
+                                    <label for="up6_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_サンダーボルト＊" id="up6_2" value="観るかも">
+                                    <label for="up6_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_サンダーボルト＊" id="up6_3" value="興味がない">
+                                    <label for="up6_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_サンダーボルト＊" id="up6_4" value="知らない">
+                                    <label for="up6_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品7: 28年後… -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">28年後…</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_28年後…" id="up7_1" value="とても観たい" required>
+                                    <label for="up7_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_28年後…" id="up7_2" value="観るかも">
+                                    <label for="up7_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_28年後…" id="up7_3" value="興味がない">
+                                    <label for="up7_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_28年後…" id="up7_4" value="知らない">
+                                    <label for="up7_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品8: スーパーマン -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">スーパーマン</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スーパーマン" id="up8_1" value="とても観たい" required>
+                                    <label for="up8_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スーパーマン" id="up8_2" value="観るかも">
+                                    <label for="up8_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スーパーマン" id="up8_3" value="興味がない">
+                                    <label for="up8_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_スーパーマン" id="up8_4" value="知らない">
+                                    <label for="up8_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品9: キャプテン・アメリカ：ブレイブ・ニュー・ワールド -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">キャプテン・アメリカ：ブレイブ・ニュー・ワールド</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_キャプテン・アメリカ：ブレイブ・ニュー・ワールド" id="up9_1" value="とても観たい" required>
+                                    <label for="up9_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_キャプテン・アメリカ：ブレイブ・ニュー・ワールド" id="up9_2" value="観るかも">
+                                    <label for="up9_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_キャプテン・アメリカ：ブレイブ・ニュー・ワールド" id="up9_3" value="興味がない">
+                                    <label for="up9_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_キャプテン・アメリカ：ブレイブ・ニュー・ワールド" id="up9_4" value="知らない">
+                                    <label for="up9_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 作品10: アバター：ファイヤー・アンド・アッシュ -->
+                        <div class="q24-row">
+                            <div class="q24-work-name">アバター：ファイヤー・アンド・アッシュ</div>
+                            <div class="q24-options">
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_アバター：ファイヤー・アンド・アッシュ" id="up10_1" value="とても観たい" required>
+                                    <label for="up10_1">絶対観る</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_アバター：ファイヤー・アンド・アッシュ" id="up10_2" value="観るかも">
+                                    <label for="up10_2">観るかも</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_アバター：ファイヤー・アンド・アッシュ" id="up10_3" value="興味がない">
+                                    <label for="up10_3">興味なし</label>
+                                </div>
+                                <div class="q24-option">
+                                    <input type="radio" name="次回鑑賞期待作_アバター：ファイヤー・アンド・アッシュ" id="up10_4" value="知らない">
+                                    <label for="up10_4">知らない</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 8: ご連絡先（プレゼント応募・規約） -->
+            <div id="step8" class="step" data-step="8" data-label="ご連絡先">
+                <h2 class="text-2xl font-bold mb-2 text-gray-800">抽選で映画鑑賞券をプレゼント！</h2>
+                <p class="text-sm text-gray-500 mb-8 leading-relaxed">アンケートにご協力いただいた感謝として、抽選で素敵なプレゼントをご用意しています。</p>
+
+                <div class="mb-6 question-block" style="display: none;">
                     <label class="block text-sm font-bold mb-3 text-gray-700">プレゼントに応募されますか？<span class="req-mark">＊</span></label>
                     <div class="radio-grid">
-                        <input type="radio" name="プレゼント応募" id="p_yes" value="応募する" onchange="toggleEmail(true)" class="hidden" required>
+                        <input type="radio" name="プレゼント応募" id="p_yes" value="応募する" onchange="toggleEmail(true)" class="hidden" checked>
                         <label for="p_yes" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">応募する</label>
 
                         <input type="radio" name="プレゼント応募" id="p_no" value="しない" onchange="toggleEmail(false)" class="hidden">
@@ -1148,8 +1612,76 @@
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbzLBuHcdkjkP1K6L6OAxp_GcJ1QMmBZjTHjtYFcIb3nWbUPT5NZdzucQjKcGq0y2As4Ow/exec';
 
         let currentStep = 1;
-        const totalSteps = 7;
+        const totalSteps = 8;
         const matrixItems = ["アクセス・立地", "チケット購入のスムーズさ", "劇場の雰囲気・質", "トイレや館内の清潔さ", "スクリーン・音響の設備", "スタッフの接客・案内"];
+
+        // 劇場名リスト
+        const theaterList = {
+            "TOHOシネマズ": ["新宿", "六本木ヒルズ", "日比谷", "渋谷", "池袋", "上野", "錦糸町", "ららぽーと豊洲", "ららぽーと横浜", "ららぽーと船橋", "ららぽーと立川立飛", "ららぽーとEXPOCITY", "ららぽーと海老名", "ららぽーと和泉", "ららぽーと柏の葉", "ららぽーと富士見", "ららぽーと新三郷", "ららぽーと湘南平塚", "その他"],
+            "イオンシネマ": ["幕張", "板橋", "川崎", "名古屋", "京都桂川", "広島", "福岡", "その他"],
+            "ユナイテッド・シネマ": ["アクアシティお台場", "キャナルシティ13", "としまえん", "パルコヤ", "プレミアム新宿", "プレミアム上野", "プレミアム横浜", "プレミアム名古屋", "プレミアム大阪", "プレミアム京都", "プレミアム神戸", "プレミアム福岡", "その他"],
+            "シネマサンシャイン": ["池袋", "新宿", "渋谷", "横浜", "名古屋", "大阪", "京都", "神戸", "福岡", "その他"],
+            "109シネマズ": ["横浜", "湘南", "名古屋", "大阪", "京都", "神戸", "福岡", "その他"],
+            "TJOY": ["新宿", "渋谷", "池袋", "横浜", "名古屋", "大阪", "京都", "神戸", "福岡", "その他"],
+            "MOVIX": ["新宿", "渋谷", "池袋", "横浜", "名古屋", "大阪", "京都", "神戸", "福岡", "その他"]
+        };
+
+        // 劇場名リスト更新関数
+        function updateTheaterList() {
+            const chainSelect = document.getElementById('cinema-chain');
+            const theaterSelect = document.getElementById('theater-name');
+            const otherContainer = document.getElementById('theater-other-container');
+            const otherInput = document.getElementById('theater-other-input');
+            
+            const selectedChain = chainSelect.value;
+            theaterSelect.innerHTML = '<option value="">選択してください</option>';
+            otherContainer.classList.add('hidden');
+            otherInput.value = '';
+            otherInput.removeAttribute('required');
+            
+            if (selectedChain === 'その他') {
+                theaterSelect.innerHTML = '<option value="">その他を選択しました</option>';
+                theaterSelect.removeAttribute('required');
+                otherContainer.classList.remove('hidden');
+                otherInput.removeAttribute('required');
+            } else if (selectedChain && theaterList[selectedChain]) {
+                theaterSelect.setAttribute('required', 'true');
+                theaterList[selectedChain].forEach(theater => {
+                    const option = document.createElement('option');
+                    option.value = theater;
+                    option.textContent = theater;
+                    theaterSelect.appendChild(option);
+                });
+            }
+        }
+
+        // URLパラメータから自動選択
+        function autoSelectCinemaFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cinema = urlParams.get('cinema');
+            const theater = urlParams.get('theater');
+            
+            if (cinema) {
+                const chainSelect = document.getElementById('cinema-chain');
+                chainSelect.value = cinema;
+                updateTheaterList();
+                
+                // 劇場名の選択は少し遅延させてから（リスト更新後）
+                setTimeout(() => {
+                    if (theater) {
+                        const theaterSelect = document.getElementById('theater-name');
+                        // 完全一致または部分一致で検索
+                        for (let i = 0; i < theaterSelect.options.length; i++) {
+                            if (theaterSelect.options[i].value === theater || 
+                                theaterSelect.options[i].textContent.includes(theater)) {
+                                theaterSelect.value = theaterSelect.options[i].value;
+                                break;
+                            }
+                        }
+                    }
+                }, 100);
+            }
+        }
 
         // フォントサイズ調整機能
         function adjustFontSize(size) {
@@ -1240,6 +1772,7 @@
             initRatings('q15-container', '点数_劇場の推奨度');
             initMatrix();
             updateNavigation();
+            autoSelectCinemaFromURL(); // URLパラメータから劇場を自動選択
 
             document.getElementById('surveyForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -1261,12 +1794,23 @@
         }
 
         function initMatrix() {
-            const levels = [{v:1, t:"期待を大きく下回っていた"}, {v:2, t:"期待を少し下回っていた"}, {v:3, t:"期待通りだった"}, {v:4, t:"期待を少し上回っていた"}, {v:5, t:"期待を大きく上回っていた"}];
+            const levels = [
+                {v:1, t:"期待を大きく下回っていた", short:"大きく下回る"},
+                {v:2, t:"期待を少し下回っていた", short:"少し下回る"},
+                {v:3, t:"期待通りだった", short:"期待通り"},
+                {v:4, t:"期待を少し上回っていた", short:"少し上回る"},
+                {v:5, t:"期待を大きく上回っていた", short:"大きく上回る"}
+            ];
             const container = document.getElementById('matrix-container');
             matrixItems.forEach((item, idx) => {
-                let rowHtml = `<div class="matrix-row border-b border-gray-50 pb-4 mb-4 last:border-0 last:pb-0"><p class="font-bold mb-3 text-sm text-gray-800"><span class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 text-gray-400 rounded-md text-[10px] mr-2">${idx+1}</span>${item}</p><div class="flex gap-2">`;
+                let rowHtml = `<div class="q19-row">
+                    <div class="q19-item-name">${item}</div>
+                    <div class="q19-options">`;
                 levels.forEach(lvl => {
-                    rowHtml += `<div class="flex-1 flex flex-col items-center"><input type="radio" name="満足度_${item}" id="m_${idx}_${lvl.v}" value="${lvl.t}" class="hidden" required><label for="m_${idx}_${lvl.v}" class="w-full max-w-[48px] border border-gray-200 py-3 rounded-xl text-center cursor-pointer hover:border-blue-300 transition-all text-xs bg-white">${lvl.v}</label><span class="text-[9px] text-gray-400 mt-2 text-center leading-tight">${lvl.t.replace('期待を', '期待<br>').replace('回っていた', '回った')}</span></div>`;
+                    rowHtml += `<div class="q19-option">
+                        <input type="radio" name="満足度_${item}" id="m_${idx}_${lvl.v}" value="${lvl.t}" class="hidden" required>
+                        <label for="m_${idx}_${lvl.v}">${lvl.v}</label>
+                    </div>`;
                 });
                 rowHtml += `</div></div>`;
                 container.innerHTML += rowHtml;
@@ -1349,6 +1893,7 @@
             }
         }
 
+
         function toggleQ20OtherRadio(el) {
             const container = document.getElementById('q20_other_container');
             const input = document.getElementById('q20_other_input');
@@ -1429,12 +1974,56 @@
             }
         }
 
+        function handlePresentChoice() {
+            // 応募する/応募しないが選択されたら、自動的に次のステップへ進む
+            updateNavigation();
+            // 少し遅延を入れてから遷移（UIの更新を待つ）
+            setTimeout(() => {
+                changeStep(1);
+            }, 100);
+        }
+
         function changeStep(n) {
-            if (n > 0 && !validateStep(currentStep)) return;
+            if (n > 0 && !validateStep(currentStep)) {
+                console.log('Validation failed for step', currentStep);
+                return;
+            }
+            
+            // STEP 6で「応募しない」を選んだ場合、送信処理を実行
+            if (n > 0 && currentStep === 6) {
+                const presentChoice = document.querySelector('input[name="プレゼント応募選択"]:checked');
+                if (presentChoice && presentChoice.value === 'しない') {
+                    // プレゼント応募しない場合は、データを送信して完了画面へ
+                    handleSubmitWithoutPresent();
+                    return;
+                }
+            }
+            
             const steps = document.querySelectorAll('.step');
+            if (steps.length === 0) {
+                console.error('No steps found');
+                return;
+            }
+            
             steps[currentStep - 1].classList.remove('active');
             currentStep += n;
+            
+            if (currentStep < 1 || currentStep > steps.length) {
+                console.error('Invalid step number:', currentStep);
+                return;
+            }
+            
             steps[currentStep - 1].classList.add('active');
+            
+            // STEP 8に到達した場合、自動的にプレゼント応募を「応募する」に設定
+            if (currentStep === 8) {
+                const pYes = document.getElementById('p_yes');
+                if (pYes) {
+                    pYes.checked = true;
+                    toggleEmail(true);
+                }
+            }
+            
             updateNavigation();
             window.scrollTo(0, 0);
         }
@@ -1443,6 +2032,19 @@
             document.getElementById('prevBtn').classList.toggle('hidden', currentStep === 1);
             document.getElementById('nextBtn').classList.toggle('hidden', currentStep === totalSteps);
             document.getElementById('submitBtn').classList.toggle('hidden', currentStep !== totalSteps);
+            
+            // STEP 6のボタンテキストを変更
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentStep === 6) {
+                const presentChoice = document.querySelector('input[name="プレゼント応募選択"]:checked');
+                if (presentChoice && presentChoice.value === 'しない') {
+                    nextBtn.innerHTML = 'アンケートを終了する <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                } else {
+                    nextBtn.innerHTML = '次へ <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>';
+                }
+            } else {
+                nextBtn.innerHTML = '次へ <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>';
+            }
             
             // 進捗計算：最初のステップは0%、各ステップ完了時に進捗を更新
             // STEP 1完了時（STEP 2に進む時）に14%と表示
@@ -1498,6 +2100,38 @@
                     // 劇場選択理由のチェックボックス：少なくとも1つ選択されている必要がある
                     const checkedBoxes = block.querySelectorAll('input[type="checkbox"][name="劇場選択理由"]:checked');
                     answered = checkedBoxes.length > 0;
+                } else if (inputs[0].type === 'checkbox' && inputs[0].name === '映画館重視要素') {
+                    // 映画館重視要素のチェックボックス：少なくとも1つ選択されている必要がある
+                    const checkedBoxes = block.querySelectorAll('input[type="checkbox"][name="映画館重視要素"]:checked');
+                    answered = checkedBoxes.length > 0;
+                } else if (inputs[0].type === 'radio' && inputs[0].name === 'プレゼント応募選択') {
+                    // プレゼント応募選択のラジオボタン：1つ選択されている必要がある
+                    const checked = block.querySelector('input[name="プレゼント応募選択"]:checked');
+                    answered = checked !== null;
+                    if (!answered) {
+                        console.log('プレゼント応募選択が選択されていません');
+                    }
+                } else if (inputs[0].type === 'radio' && inputs[0].name && inputs[0].name.startsWith('次回鑑賞期待作_')) {
+                    // 次回鑑賞期待作のラジオボタン：プレゼント応募する人のみ必須
+                    const presentChoice = document.querySelector('input[name="プレゼント応募選択"]:checked');
+                    if (presentChoice && presentChoice.value === '応募する') {
+                        // プレゼント応募する場合：各作品ごとに1つ選択されている必要がある
+                        const allWorkGroups = block.querySelectorAll('[name^="次回鑑賞期待作_"]');
+                        const uniqueGroups = new Set();
+                        allWorkGroups.forEach(input => {
+                            if (input.type === 'radio') {
+                                uniqueGroups.add(input.name);
+                            }
+                        });
+                        // 各グループに対して1つずつ選択されているかチェック
+                        answered = Array.from(uniqueGroups).every(groupName => {
+                            const groupInputs = block.querySelectorAll(`input[name="${groupName}"]:checked`);
+                            return groupInputs.length > 0;
+                        });
+                    } else {
+                        // プレゼント応募しない場合は必須ではない
+                        answered = true;
+                    }
                 } else {
                     const req = inputs[0].hasAttribute('required') || (inputs[0].type === 'radio' && inputs[0].required);
 
@@ -1533,6 +2167,62 @@
 
             if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return isValid;
+        }
+
+        async function handleSubmitWithoutPresent() {
+            // プレゼント応募しない場合の送信処理
+            const form = document.getElementById('surveyForm');
+            const formData = new FormData(form);
+            const object = {};
+            
+            // プレゼント応募選択を「しない」に設定
+            object['プレゼント応募選択'] = 'しない';
+            object['プレゼント応募'] = 'しない';
+            
+            // フォームデータを取得
+            formData.forEach((value, key) => {
+                if (key !== 'プレゼント応募選択' && key !== 'プレゼント応募') {
+                    if (object[key]) {
+                        if (Array.isArray(object[key])) {
+                            object[key].push(value);
+                        } else {
+                            object[key] = [object[key], value];
+                        }
+                    } else {
+                        object[key] = value;
+                    }
+                }
+            });
+            
+            // チェックボックスグループの処理
+            const checkboxGroups = {};
+            formData.forEach((value, key) => {
+                if (key !== 'プレゼント応募選択' && key !== 'プレゼント応募') {
+                    if (!checkboxGroups[key]) {
+                        checkboxGroups[key] = [];
+                    }
+                    checkboxGroups[key].push(value);
+                }
+            });
+            
+            Object.keys(checkboxGroups).forEach(key => {
+                if (checkboxGroups[key].length > 1) {
+                    object[key] = checkboxGroups[key].join(', ');
+                } else {
+                    object[key] = checkboxGroups[key][0];
+                }
+            });
+            
+            try {
+                await fetch(scriptUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(object) });
+                document.getElementById('surveyForm').classList.add('hidden');
+                document.getElementById('headerArea').classList.add('hidden');
+                document.getElementById('thanksPage').classList.remove('hidden');
+            } catch (error) {
+                console.error("Error:", error);
+                alert('送信に失敗しました。ネットワーク環境を確認してください。');
+            }
+            window.scrollTo(0, 0);
         }
 
         async function handleSubmit() {
@@ -1579,8 +2269,36 @@
             if (object['作品名'] === 'その他' && object['作品名_自由入力']) {
                 object['作品名'] = 'その他：' + object['作品名_自由入力'];
             }
-            if (object['次回鑑賞期待作'] === 'その他' && object['次回期待作自由入力']) {
-                object['次回鑑賞期待作'] = 'その他：' + object['次回期待作自由入力'];
+            
+            // プレゼント応募選択の値をプレゼント応募に反映
+            if (object['プレゼント応募選択']) {
+                object['プレゼント応募'] = object['プレゼント応募選択'];
+            }
+            
+            // 次回鑑賞期待作の処理（各作品ごとの選択値を処理）
+            const q24Keys = Object.keys(object).filter(key => key.startsWith('次回鑑賞期待作_'));
+            if (q24Keys.length > 0) {
+                // 各作品とその選択値をまとめる
+                const q24Results = {};
+                q24Keys.forEach(key => {
+                    // キーから作品名を抽出（"次回鑑賞期待作_"の後）
+                    const workName = key.replace('次回鑑賞期待作_', '');
+                    q24Results[workName] = object[key];
+                });
+                // 結果をJSON形式で保存（または個別のフィールドとして保存）
+                object['次回鑑賞期待作_詳細'] = JSON.stringify(q24Results);
+                
+                // 「とても観たい」を選択した作品を抽出
+                const veryInterested = Object.keys(q24Results).filter(work => q24Results[work] === 'とても観たい');
+                if (veryInterested.length > 0) {
+                    object['次回鑑賞期待作_とても観たい'] = veryInterested.join(', ');
+                }
+                
+                // 「観るかも」を選択した作品を抽出
+                const maybeInterested = Object.keys(q24Results).filter(work => q24Results[work] === '観るかも');
+                if (maybeInterested.length > 0) {
+                    object['次回鑑賞期待作_観るかも'] = maybeInterested.join(', ');
+                }
             }
 
             try {
