@@ -369,7 +369,7 @@
                         <input type="radio" name="作品名" id="m8" value="はたらく細胞" onchange="toggleQ1Other(this)" class="hidden"><label for="m8" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">はたらく細胞</label>
                         <input type="radio" name="作品名" id="m9" value="ウィキッド ふたりの魔女" onchange="toggleQ1Other(this)" class="hidden"><label for="m9" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">ウィキッド ふたりの魔女</label>
                         <input type="radio" name="作品名" id="m10" value="矢野くんの普通の日々" onchange="toggleQ1Other(this)" class="hidden"><label for="m10" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">矢野くんの普通の日々</label>
-                        <input type="radio" name="作品名" id="m11" value="あんさんぶるスターズ！！ライブビューイング" onchange="toggleQ1Other(this)" class="hidden"><label for="m11" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">あんさんぶるスターズ！！ライブビューイング</label>
+                        <input type="radio" name="作品名" id="m11" value="あんさんぶるスターズ！" onchange="toggleQ1Other(this)" class="hidden"><label for="m11" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">あんさんぶるスターズ！！ライブビューイング</label>
                         <input type="radio" name="作品名" id="m_other" value="その他" onchange="toggleQ1Other(this)" class="hidden"><label for="m_other" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">その他</label>
                     </div>
                     <div id="q1_other_container" class="hidden">
@@ -378,7 +378,7 @@
                 </div>
 
                 <div class="mb-6 question-block">
-                    <label class="block text-sm font-bold mb-3 text-gray-700">Q2. ご覧になった上映フォーマットをお聞かせください。<span class="req-mark">＊</span></label>
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q2. ご覧になったスクリーンフォーマットをお聞かせください。<span class="req-mark">＊</span></label>
                     <div class="radio-grid mb-6">
                         <input type="radio" name="フォーマット" id="f1" value="通常上映" class="hidden" required><label for="f1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">通常上映</label>
                         <input type="radio" name="フォーマット" id="f2" value="IMAX" class="hidden"><label for="f2" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">IMAX</label>
@@ -396,6 +396,15 @@
                             <input type="radio" name="音声形式" id="voice1" value="字幕" onclick="toggleRadio(this)" class="hidden"><label for="voice1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">字幕</label>
                             <input type="radio" name="音声形式" id="voice2" value="吹替" onclick="toggleRadio(this)" class="hidden"><label for="voice2" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">吹替</label>
                         </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 question-block">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">Q2-2. 上映方式について、該当するものがあればお聞かせください。（複数選択可）</label>
+                    <div class="radio-grid">
+                        <input type="checkbox" name="上映方式" id="screening_type1" value="ライブビューイング" class="hidden"><label for="screening_type1" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">ライブビューイング</label>
+                        <input type="checkbox" name="上映方式" id="screening_type2" value="応援上映" class="hidden"><label for="screening_type2" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">応援上映</label>
+                        <input type="checkbox" name="上映方式" id="screening_type3" value="イベント上映" class="hidden"><label for="screening_type3" class="border border-gray-200 p-3 rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-gray-50 bg-white">イベント上映</label>
                     </div>
                 </div>
 
